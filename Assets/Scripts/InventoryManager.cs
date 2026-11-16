@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -14,8 +13,6 @@ public class InventoryManager : MonoBehaviour
         {
             inventory.Add(new InventoryItem(Random.Range(1, 1001), "item_" + i, Random.Range(1, 101)));
         }
-
-        quickSort(inventory.Select(a => a.value).ToArray(), 0, inventorySize - 1);
     }
 
     public InventoryItem LinearSearchByName(string itemName)
@@ -48,42 +45,39 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
 
-    // DO THE QUICK SORT, WE MUST MOVE QUICKLY
-
-    public int partition(int[] array, int first, int last)
+    public int partition(int first, int last)
     {
-        int pivot = array[last];
+        int pivotVal = inventory[last].value;
         int smaller = (first - 1);
 
         for (int element = first; element < last; element++)
         {
-            if (array[element] < pivot)
+            if (inventory[element].value < pivotVal)
             {
-                element++;
+                smaller++;
 
-                int temporary = array[smaller];
-                array[smaller] = array[element];
-                array[element] = temporary;
+                InventoryItem temporary = inventory[smaller];
+                inventory[smaller] = inventory[element];
+                inventory[element] = temporary;
             }
         }
 
-        int temporaryNext = array[smaller + 1];
-        array[smaller + 1] = array[last];
-        array[last] = temporaryNext;
+        InventoryItem temporaryNext = inventory[smaller + 1];
+        inventory[smaller + 1] = inventory[last];
+        inventory[last] = temporaryNext;
 
         return smaller + 1;
 
     }
 
-    public void quickSort(int[] array, int first, int last)
+    public void QuickSortByValue(int first, int last)
     {
         if (first < last)
         {
-            int pivot = partition(array, first, last);
+            int pivot = partition(first, last);
 
-            quickSort(array, first, pivot - 1);
-            quickSort(array, pivot + 1, last);
-
+            QuickSortByValue(first, pivot - 1);
+            QuickSortByValue(pivot + 1, last);
         }
     }
 }
